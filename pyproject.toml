@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ai-python-engineer-challenge-igor-sulim"
+version = "0.1.0"
+description = "Text translator app"
+authors = ["Igor Sulim <igosulim@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+transformers = "^4.44.2"
+py3langid = "^0.3.0"
+fastapi = "^0.112.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
