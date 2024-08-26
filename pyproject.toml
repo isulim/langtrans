@@ -12,13 +12,17 @@ transformers = "^4.44.2"
 py3langid = "^0.3.0"
 fastapi = "^0.112.2"
 torch = [
-    { platform = "darwin", version = "^2.1.0", source = "PyPI" },
-    { platform = "linux", version = "^2.1.0+cpu", source = "torch-cpu" },
+    { platform = "darwin", version = "^2.0.0", source = "PyPI" },
+    { platform = "linux", version = "^2.0.0+cpu", source = "torch-cpu" },
 ]
+sentencepiece = "^0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
 jupyter = "^1.0.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.2"
 
 [build-system]
 requires = ["poetry-core"]
