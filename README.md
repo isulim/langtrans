@@ -1,5 +1,5 @@
 
-# AI Pyhon Engineer Role – Recruitment task
+# AI Python Engineer Role – Recruitment task
 
 ## Task Objective
 
