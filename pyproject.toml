@@ -20,6 +20,7 @@ uvicorn = "^0.30.6"
 pydantic = "^2.8.2"
 
 
+tdqm = "^0.0.1"
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
 
