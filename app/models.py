@@ -35,7 +35,7 @@ class M2MTranslator:
     def __init__(self):
         model_path = Path("models/m2m100_418M")
         if not model_path.exists():
-            raise FileNotFoundError(f"Model in path: {model_path} does not exist.")
+            raise FileNotFoundError(f"Model in path: {model_path} does not exist. Run command `make download-model`.")
 
         self.model = M2M100ForConditionalGeneration.from_pretrained(model_path)
         self.tokenizer = M2M100Tokenizer.from_pretrained(model_path)
