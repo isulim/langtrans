@@ -3,7 +3,7 @@ from pathlib import Path
 from py3langid.langid import LanguageIdentifier, MODEL_FILE
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
-from app.config import AVAILABLE_LANGS
+from app.config import AVAILABLE_LANGS, MODEL_NAME
 
 
 class LangIdentifier:
@@ -33,12 +33,13 @@ class M2MTranslator:
     (https://huggingface.co/facebook/m2m100_418M)[https://huggingface.co/facebook/m2m100_418M]"""
 
     def __init__(self):
-        model_path = Path("models/m2m100_418M")
-        if not model_path.exists():
-            raise FileNotFoundError(f"Model in path: {model_path} does not exist. Run command `make download-model`.")
+        model_path = Path("models", MODEL_NAME, "model")
+        tokenizer_path = Path("models", MODEL_NAME, "tokenizer")
+        if not model_path.exists() or not tokenizer_path.exists():
+            raise FileNotFoundError(f"Model in path {model_path} or tokenizer in {tokenizer_path} do not exist. Run command `make download-model`.")
 
         self.model = M2M100ForConditionalGeneration.from_pretrained(model_path)
-        self.tokenizer = M2M100Tokenizer.from_pretrained(model_path)
+        self.tokenizer = M2M100Tokenizer.from_pretrained(tokenizer_path)
 
     def translate(self, text: str, source_lang: str, target_lang: str) -> str:
         """
