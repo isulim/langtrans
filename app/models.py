@@ -13,18 +13,17 @@ class LangIdentifier:
         self.identifier = LanguageIdentifier.from_pickled_model(MODEL_FILE, norm_probs=True)
         self.identifier.set_languages(AVAILABLE_LANGS)
 
-    def identify(self, text: str) -> str:
+    def identify(self, input_text: str) -> str:
         """
         Identifies the language of the input text.
 
         Args:
-            text: Text to identify the language.
+            input_text: Text to identify the language.
 
         Returns:
             Language code of the identified language.
         """
-
-        lang = self.identifier.classify(text)[0]
+        lang = self.identifier.classify(input_text)[0]
         return lang
 
 
@@ -41,12 +40,12 @@ class M2MTranslator:
         self.model = M2M100ForConditionalGeneration.from_pretrained(model_path)
         self.tokenizer = M2M100Tokenizer.from_pretrained(tokenizer_path)
 
-    def translate(self, text: str, source_lang: str, target_lang: str) -> str:
+    def translate(self, input_text: str, source_lang: str, target_lang: str) -> str:
         """
         Translates the input text to the target language.
 
         Args:
-            text: Text to translate.
+            input_text: Text to translate.
             source_lang: Source language of the text.
             target_lang: Target language to translate the text.
 
@@ -56,7 +55,7 @@ class M2MTranslator:
 
         self.tokenizer.src_lang = source_lang
 
-        inputs = self.tokenizer(text, return_tensors="pt").input_ids
+        inputs = self.tokenizer(input_text, return_tensors="pt").input_ids
         outputs = self.model.generate(inputs, forced_bos_token_id=self.tokenizer.get_lang_id(target_lang))
         translated_text = self.tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
         return translated_text
