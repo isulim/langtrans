@@ -1,0 +1,67 @@
+<html>
+    <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .column {
+      float: left;
+      width: 50%;
+    }
+
+    .row {
+        margin: 10px;
+    }
+    input {
+        display: block;
+    }
+    </style>
+    <body>
+        <h1>AI Python Engineer Role – Recruitment task</h1>
+        <h3>{{ description }}</h3>
+        <h4>
+            Supported languages: <br>
+            {% for lang in available_langs %}
+                {{ lang }},
+            {% endfor %}
+        </h4>
+    <div>
+        <form>
+            <div class="row">
+                <div class="column">
+                    <div class="row">
+                        <span>Detected language:</span>
+                        <span id="source_language"></span>
+                    </div>
+                    <div class="row">
+                        <textarea id="input_text" name="input_text" rows="4" cols="50" placeholder="Input your text here"></textarea>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="row">
+                        <label for="target_lang">Choose target language:</label>
+                        <select id="target_lang" name="target_lang">
+                            {% for lang in available_langs %}
+                                <option value="{{ lang }}">{{ lang }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row">
+                        <textarea id="output_text" name="output_text" rows="4" cols="50" placeholder="Translated text"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">&nbsp;</div>
+                <div class="column">
+                    <input type="submit" value="Translate">
+                </div>
+            </div>
+
+
+
+        </form>
+    </div>
+
+    </body>
+</html>
