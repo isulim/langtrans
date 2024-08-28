@@ -62,12 +62,34 @@ make docker-run
 5. Open browser and go to [http://127.0.0.1:8080](http://127.0.0.1:8080)
 
 ### Using the application
-On the interface you see two textfields:
+1. On the frontend interface you see two textfields:
 - on the left side you can input text in any of the supported languages - the API should detect the language automatically and display which language it detected
 - on the right side you can select target language from dropdown list
 - after you click `Translate` button, the translated text should appear in the textfield on the right side
 
-
+2. You can also make API calls directly using curl or any client:
+- to detect language of the input text, e.g.:
+```bash
+curl --request POST \
+  --url http://127.0.0.1:8080/identify \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.0.0' \
+  --data '{
+	"input_text": "Dzień dobry"
+}'
+```
+- to translate text, e.g.:
+```bash
+curl --request POST \
+  --url http://127.0.0.1:8080/translate \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.0.0' \
+  --data '{
+	"input_text": "Dzień dobry",
+	"source_lang": "pl",
+	"target_lang": "en"
+}'
+```
 ### Scalability Consideration
 Application can be run locally but I also containerized it in a Docker image, so it can be easily deployed on any cloud provider that supports Kubernetes engine.  
 It could be scaled horizontally by running multiple instances of the container behind a load balancer.
