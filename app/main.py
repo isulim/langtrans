@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Union
 
 from litestar import Litestar, get, post
 from litestar.enums import RequestEncodingType
@@ -33,15 +33,14 @@ async def index() -> Template:
 
 
 @post("/identify")
-async def identify_language(request: HTMXRequest, data: Annotated[LangDetectionRequest, Body(media_type=RequestEncodingType.URL_ENCODED)]) -> LangDetectionResponse:
+async def identify_language(request: HTMXRequest, data: LangDetectionRequest) -> LangDetectionResponse:
     """Identify the language of the input text."""
-
     identified = app.state.langid.identify(**data.dict())
     return LangDetectionResponse(**identified)
 
 
 @post("/translate")
-async def translate_text(request: HTMXRequest, data: Annotated[TranslationRequest, Body(media_type=RequestEncodingType.URL_ENCODED)]) -> TranslationResponse:
+async def translate_text(request: HTMXRequest, data: TranslationRequest) -> TranslationResponse:
     """Translate the input text to the target language."""
 
     data_dict = data.dict()
@@ -50,6 +49,7 @@ async def translate_text(request: HTMXRequest, data: Annotated[TranslationReques
 
 
 app = Litestar(
+    debug=True,
     route_handlers=[index, identify_language, translate_text],
     on_startup=[instantiate_model],
     request_class=HTMXRequest,
