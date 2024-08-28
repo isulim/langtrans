@@ -3,7 +3,7 @@ from pathlib import Path
 from py3langid.langid import LanguageIdentifier, MODEL_FILE
 from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 
-from app.config import AVAILABLE_LANGS, MODEL_NAME
+from app.config import AVAILABLE_LANGS, MODEL_NAME, AvailableLangEnum
 
 
 class LangIdentifier:
@@ -13,7 +13,7 @@ class LangIdentifier:
         self.identifier = LanguageIdentifier.from_pickled_model(MODEL_FILE, norm_probs=True)
         self.identifier.set_languages(AVAILABLE_LANGS)
 
-    def identify(self, input_text: str) -> str:
+    def identify(self, input_text: str) -> dict[str, str]:
         """
         Identifies the language of the input text.
 
@@ -24,7 +24,8 @@ class LangIdentifier:
             Language code of the identified language.
         """
         lang = self.identifier.classify(input_text)[0]
-        return lang
+        lang_verbose = AvailableLangEnum(lang).name
+        return {"lang": lang, "lang_verbose": lang_verbose}
 
 
 class M2MTranslator:

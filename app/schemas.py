@@ -8,7 +8,8 @@ class LangDetectionRequest(BaseModel):
 
 
 class LangDetectionResponse(BaseModel):
-    detected_lang: str = Field(title="Detected language", description="ISO language code of the detected language.")
+    lang: str = Field(title="Detected language", description="ISO language code of the detected language.")
+    lang_verbose: str = Field(title="Detected language", description="Verbose name of the detected language.")
 
 
 class TranslationRequest(BaseModel):
