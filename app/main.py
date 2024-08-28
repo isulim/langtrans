@@ -1,6 +1,9 @@
 from pathlib import Path
+from typing import Annotated
 
-from litestar import Litestar, Request, get, post
+from litestar import Litestar, get, post
+from litestar.enums import RequestEncodingType
+from litestar.params import Body
 from litestar.response import Template
 from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.contrib.htmx.request import HTMXRequest
@@ -23,20 +26,19 @@ async def index() -> Template:
     return HTMXTemplate(template_name="index.html", context={
         "title": "Language Identification and Translation",
         "description": "Identify the language of the input text and translate it to the target language.",
-        "available_langs": [lang.name for lang in AvailableLangEnum]
+        "available_langs": [{"name": lang.name, "value": lang.value} for lang in AvailableLangEnum]
     })
 
 
 @post("/identify")
-async def identify_language(request: HTMXRequest, data: LangDetectionRequest) -> LangDetectionResponse:
+async def identify_language(request: HTMXRequest, data: Annotated[LangDetectionRequest, Body(media_type=RequestEncodingType.URL_ENCODED)]) -> LangDetectionResponse:
     """Identify the language of the input text."""
-
-    lang = app.state.langid.identify(**data.dict())
-    return LangDetectionResponse(detected_lang=lang)
+    identified = app.state.langid.identify(**data.dict())
+    return LangDetectionResponse(**identified)
 
 
 @post("/translate")
-async def translate_text(request: HTMXRequest, data: TranslationRequest) -> TranslationResponse:
+async def translate_text(request: HTMXRequest, data: Annotated[TranslationRequest, Body(media_type=RequestEncodingType.URL_ENCODED)]) -> TranslationResponse:
     """Translate the input text to the target language."""
 
     data_dict = data.dict()
