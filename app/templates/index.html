@@ -2,6 +2,10 @@
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+        <script src="https://unpkg.com/htmx-ext-json-enc@2.0.1/json-enc.js"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/client-side-templates.js"></script>
+        <script src="https://unpkg.com/mustache@latest"></script>
     </head>
     <body>
         <div class="row">
@@ -11,43 +15,59 @@
                 <h4>
                     Supported languages: <br>
                     {% for lang in available_langs %}
-                        {{ lang }}
+                        {{ lang.name }}
                     {% endfor %}
-
                 </h4>
             </div>
         </div>
         <div>
-            <form class="form-control">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="mb-3">&nbsp;</div>
-                        <div class="mb-3">
-                            <span>Detected language:</span>
-                            <span id="source_language"></span>
-                        </div>
-                        <div class="mb-3">
-                            <textarea id="input_text" name="input_text" rows="4" cols="50" placeholder="Input your text here" class="form-control"></textarea>
+            <div class="row">
+                <div class="col-6">
+                    <div class="mb-3">&nbsp;</div>
+                    <div class="mb-3">
+                        <div id="language">&nbsp;
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="mb-3">
-                            <label for="target_lang">Choose target language:</label>
-                            <select class="form-select" id="target_lang" name="target_lang">
-                                {% for lang in available_langs %}
-                                    <option value="{{ lang }}">{{ lang }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <textarea id="output_text" name="output_text" rows="4" cols="50" placeholder="Translated text" class="form-control"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <button class="btn btn-primary" type="submit">Translate</button>
-                        </div>
+                    <div class="mb-3" hx-ext="client-side-templates">
+                        <textarea id="input_text" name="input_text" rows="4" cols="50" placeholder="Input your text here" class="form-control"
+                          hx-post="/identify"
+                          hx-trigger="keyup changed delay:250ms"
+                          hx-swap="innerHTML"
+                          hx-target="#language"
+                          mustache-template="foo"></textarea>
+                        <template id="foo">
+                            <input type="hidden" id="source_lang" name="source_lang" value="{% raw %}{{ lang }}{% endraw %}">
+                            <p id="source_lang_verbose">Detected language: {% raw %}{{ lang_verbose }}{% endraw %}</p>
+                        </template>
                     </div>
                 </div>
-            </form>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label for="target_lang">Choose target language:</label>
+                        <select class="form-select" id="target_lang" name="target_lang">
+                            {% for lang in available_langs %}
+                                <option value="{{ lang.value }}">{{ lang.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <textarea id="output_text" name="output_text" rows="4" cols="50" placeholder="Translated text" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3" hx-ext="client-side-templates">
+                        <button class="btn btn-primary" type="submit"
+                            hx-post="/translate"
+                            hx-trigger="click"
+                            hx-target="#output_text"
+                            hx-swap="innerHTML"
+                            hx-ext="json-enc"
+                            mustache-template="bar"
+                            hx-include="#source_lang, #target_lang, #input_text">Translate</button>
+                    </div>
+                    <template id="bar">
+                        {% raw %}{{ output_text }}{% endraw %}
+                    </template>
+                </div>
+            </div>
         </div>
     </body>
 </html>
