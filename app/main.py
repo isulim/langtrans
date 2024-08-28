@@ -47,7 +47,6 @@ async def translate_text(request: HTMXRequest, data: Annotated[TranslationReques
 
 
 app = Litestar(
-    debug=True,
     route_handlers=[index, identify_language, translate_text],
     on_startup=[instantiate_model],
     request_class=HTMXRequest,
