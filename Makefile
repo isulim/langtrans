@@ -3,4 +3,4 @@ download-model:
 
 
 run-app:
-	poetry run uvicorn app.main:app
+	poetry run uvicorn app.main:app --port 8080
