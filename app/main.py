@@ -23,6 +23,8 @@ def instantiate_model(app: Litestar):
 
 @get("/", name="index")
 async def index() -> Template:
+    """Render the index page."""
+
     return HTMXTemplate(template_name="index.html", context={
         "title": "Language Identification and Translation",
         "description": "Identify the language of the input text and translate it to the target language.",
@@ -33,6 +35,7 @@ async def index() -> Template:
 @post("/identify")
 async def identify_language(request: HTMXRequest, data: Annotated[LangDetectionRequest, Body(media_type=RequestEncodingType.URL_ENCODED)]) -> LangDetectionResponse:
     """Identify the language of the input text."""
+
     identified = app.state.langid.identify(**data.dict())
     return LangDetectionResponse(**identified)
 
