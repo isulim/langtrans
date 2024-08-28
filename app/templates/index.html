@@ -64,9 +64,7 @@
                             mustache-template="bar"
                             hx-include="#source_lang, #target_lang, #input_text">Translate</button>
                     </div>
-                    <template id="bar">
-                        {% raw %}{{ output_text }}{% endraw %}
-                    </template>
+                    <template id="bar">{% raw %}{{ output_text }}{% endraw %}</template>
                 </div>
             </div>
         </div>
