@@ -48,7 +48,7 @@ make docker-run-hub
 
 OR if you want to build image by yourself:
 2. [Install Poetry](https://python-poetry.org/docs/#installation)
-3. Run one instruction to install poetry, download model and build docker image (tagged as `ai-translator`):
+3. Run one instruction to install poetry, download model and build docker image (tagged as `langtrans`):
 ```bash
 make docker-build
 ```

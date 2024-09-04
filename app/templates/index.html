@@ -56,7 +56,7 @@
                 <div class="title-sub">{{ description }}</div>
                 <div class="title-support">
                     {% for lang in available_langs %}
-                        {{ loop.index }}. {{ lang.name }}<br>
+                        {{ lang.name }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </div>
             </div>
