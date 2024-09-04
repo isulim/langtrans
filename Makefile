@@ -10,11 +10,11 @@ run-app:
 	poetry run uvicorn app.main:app --port 8080
 
 docker-build: download-model
-	docker build -t ai-translator .
+	docker build -t langtrans .
 
 docker-run: docker-build
-	docker run -p 8080:8080 ai-translator
+	docker run -p 8080:8080 langtrans
 
 docker-run-hub:
-	docker run -p 8080:8080 igosulim/ai-translator:latest
+	docker run -p 8080:8080 igosulim/langtrans:latest
 
