@@ -7,66 +7,121 @@
         <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/client-side-templates.js"></script>
         <script src="https://unpkg.com/mustache@latest"></script>
     </head>
+    <style>
+        #title {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .title-main {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        .title-sub {
+            font-size: 1.75rem;
+            font-weight: normal;
+            margin: 0.5rem 0;
+        }
+        .title-support {
+            font-size: 1.25rem;
+            font-weight: lighter;
+            margin: 0.5rem 0;
+        }
+    </style>
     <body>
-        <div class="row">
-            <div class="col-12 text-center">
-                <h1>{{ title }}</h1>
-                <h2>{{ description }}</h2>
-                <h4>
-                    Supported languages: <br>
+    <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="http://127.0.0.1:8080/#">LangTrans</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="http://127.0.0.1:8080/#">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <div class="container mt-5">
+            <div id="title" class="text-center mb-4">
+                <div class="title-main">{{ title }}</div>
+                <div class="title-sub">{{ description }}</div>
+                <div class="title-support">
                     {% for lang in available_langs %}
-                        {{ lang.name }}
+                        {{ loop.index }}. {{ lang.name }}<br>
                     {% endfor %}
-                </h4>
+                </div>
             </div>
         </div>
         <div>
-            <div class="row">
-                <div class="col-6">
-                    <div class="mb-3">&nbsp;</div>
-                    <div class="mb-3">
-                        <div id="language"><p>Detected language: None</p>
+            <div class="row justify-content-center">
+                <div class="col-md-5 mt-5">
+                    <div class="card">
+                        <div class="card-body" hx-ext="client-side-templates">
+                            <h5 class="card-title">Input Text</h5>
+                            <div>
+                                <p>Detected language:</p>
+                            </div>
+                            <div id="language">
+                                <p>None</p>
+                            </div>
+                            <textarea id="input_text" name="input_text" rows="4" cols="50"
+                                      placeholder="Input your text here" class="form-control"
+                                      hx-post="/identify"
+                                      hx-trigger="keyup changed delay:250ms"
+                                      hx-swap="innerHTML"
+                                      hx-target="#language"
+                                      hx-ext="json-enc"
+                                      mustache-template="foo"></textarea>
+                            <template id="foo">
+                                <input type="hidden" id="source_lang" name="source_lang" value="{% raw %}{{ lang }}{% endraw %}">
+                                <p id="source_lang_verbose">{% raw %}{{ lang_verbose }}{% endraw %}</p>
+                            </template>
                         </div>
                     </div>
-                    <div class="mb-3" hx-ext="client-side-templates">
-                        <textarea id="input_text" name="input_text" rows="4" cols="50" placeholder="Input your text here" class="form-control"
-                          hx-post="/identify"
-                          hx-trigger="keyup changed delay:250ms"
-                          hx-swap="innerHTML"
-                          hx-target="#language"
-                          hx-ext="json-enc"
-                          mustache-template="foo"></textarea>
-                        <template id="foo">
-                            <input type="hidden" id="source_lang" name="source_lang" value="{% raw %}{{ lang }}{% endraw %}">
-                            <p id="source_lang_verbose">Detected language: {% raw %}{{ lang_verbose }}{% endraw %}</p>
-                        </template>
+                </div>
+                <div class="col-md-5 mt-5">
+                    <div class="card">
+                        <div class="card-body" hx-ext="client-side-templates">
+                            <h5 class="card-title">Translation</h5>
+                            <label for="target_lang">Choose target language:</label>
+                            <select class="form-select mb-3" id="target_lang" name="target_lang">
+                                {% for lang in available_langs %}
+                                    <option value="{{ lang.value }}">{{ lang.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <textarea id="output_text" name="output_text" rows="4" cols="50"
+                                      placeholder="Translated text" class="form-control"></textarea>
+                            <template id="bar">{% raw %}{{ output_text }}{% endraw %}</template>
+                        </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="mb-3">
-                        <label for="target_lang">Choose target language:</label>
-                        <select class="form-select" id="target_lang" name="target_lang">
-                            {% for lang in available_langs %}
-                                <option value="{{ lang.value }}">{{ lang.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <textarea id="output_text" name="output_text" rows="4" cols="50" placeholder="Translated text" class="form-control"></textarea>
-                    </div>
-                    <div class="mb-3" hx-ext="client-side-templates">
-                        <button class="btn btn-primary" type="submit"
+                <div class="col-md-12 d-flex justify-content-center" hx-ext="client-side-templates">
+                    <button class="btn btn-primary mt-3" type="submit" style="width: 200px;"
                             hx-post="/translate"
                             hx-trigger="click"
                             hx-target="#output_text"
                             hx-swap="innerHTML"
                             hx-ext="json-enc"
                             mustache-template="bar"
-                            hx-include="#source_lang, #target_lang, #input_text">Translate</button>
-                    </div>
-                    <template id="bar">{% raw %}{{ output_text }}{% endraw %}</template>
+                            hx-include="#source_lang, #target_lang, #input_text"
+                    >Translate</button>
                 </div>
             </div>
         </div>
+    <!-- Footer -->
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="text-center p-3">
+            © 2024 LangTrans
+        </div>
+    </footer>
     </body>
 </html>
